@@ -1,0 +1,13 @@
+{
+  "pack": {
+    "pack_format": 7,
+    "description": "Mí Minecraft nö tá Tóaqzu"
+  },
+  "language": {
+    "toa_tqg": {
+      "name": "Tỏaq",
+      "region": "Tóaqgua",
+      "bidirectional": false
+    }
+  }
+}
