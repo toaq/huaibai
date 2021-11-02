@@ -1611,7 +1611,7 @@
   "death.attack.onFire": "Hỏaq mí %1$s da",
   "death.attack.onFire.player": "Hỏaq mí %1$s rào sôı tá mí %2$s da",
   "death.attack.lava": "Lẻo mí %1$s lîaı ja nĩe lỏenao da",
-  "death.attack.lava.player": "Lẻo mí %1$s lîaı ja nĩe lỏenao cy pùoq hỉaorıeq mí %2$s da",
+  "death.attack.lava.player": "Lẻo mí %1$s lîaı ja nĩe lỏenao cy pùoq hîaorıeq tá mí %2$s da",
   "death.attack.hotFloor": "Shỏ dủa mí %1$s lôenao déaq da",
   "death.attack.hotFloor.player": "Tủa mí %2$s shô dủa mí %1$s lôenao déaq da",
   "death.attack.inWall": "Shảı dẻq rỉopıe mí %1$s nĩe pỉosıu da",
