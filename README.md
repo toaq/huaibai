@@ -2,7 +2,7 @@
 
 A [Toaq](https://toaq.net/) translation of Minecraft.
 
-![The Minecraft title screen in Toaq](title screen.png)
+![The Minecraft title screen in Toaq](title_screen.png)
 
 This resource pack requires the mod [Caxton](https://modrinth.com/mod/caxton) for displaying Derani text. If you're not used to installing mods, don't worry: [Prism Launcher](https://prismlauncher.org/) makes this pretty easy.
 
