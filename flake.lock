@@ -1,0 +1,67 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1671007632,
+        "narHash": "sha256-1uxNTBOa0SMypJKOWeUqrz2VfmwQ1hVgWckPdgDNip4=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b9a0cd40ede905f554399f3f165895dccfd35f3b",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": [
+          "toaq-fonts",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "toaq-fonts",
+          "nixpkgs"
+        ],
+        "toaq-fonts": "toaq-fonts"
+      }
+    },
+    "toaq-fonts": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1676066446,
+        "narHash": "sha256-BenPr1qg2ykfM1VFcc8W5EcsLq2pemNlfAH5QPizZII=",
+        "owner": "toaq",
+        "repo": "fonts",
+        "rev": "8c27e3f5cd25c78464f979b6865d27fd6c38c982",
+        "type": "github"
+      },
+      "original": {
+        "owner": "toaq",
+        "repo": "fonts",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

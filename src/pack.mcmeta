@@ -1,0 +1,13 @@
+{
+  "pack": {
+    "pack_format": 12,
+    "description": "Support for the Toaq language"
+  },
+  "language": {
+    "qtq_tqg": {
+      "name": "󱛘󱛓󱚷󱛊󱛃󱛍󱚺󱛂󱚸󱚲󱛓󱛙",
+      "region": "󱛘󱛓󱚷󱛊󱛃󱛍󱚺󱛂󱛃󱚲󱛍󱚺󱛓󱛙",
+      "bidirectional": false
+    }
+  }
+}

@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nixbuild/nix-quick-install-action@cc147a0e138adf2a88b30395356d2642f474246e
+        with:
+          nix_conf: experimental-features = nix-command flakes
+      - name: Build resource pack
+        run: nix build .
+      - name: Package as ZIP
+        working-directory: result
+        run: zip -r ../Huaıbaı.zip Huaıbaı
+      - uses: marvinpinto/action-automatic-releases@919008cf3f741b179569b7a6fb4d8860689ab7f0
+        with:
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          automatic_release_tag: latest
+          prerelease: false
+          files: Huaıbaı.zip

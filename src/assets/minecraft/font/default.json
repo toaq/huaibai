@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "type": "caxton",
+      "regular": {
+        "file": "minecraft:guezueq.otf",
+        "scale_factor": 1.25,
+        "shadow_offset": 0.90909090,
+        "features": ["calt", "kern", "mark", "rclt"]
+      }
+    }
+  ]
+}
