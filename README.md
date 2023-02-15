@@ -1,6 +1,6 @@
 # Huaıbaı
 
-A [Toaq](https://toaq.net/) translation of Minecraft.
+A [Toaq](https://toaq.net/) translation of Minecraft, available in both Derani and Latin!
 
 ![The Minecraft title screen in Toaq](title_screen.png)
 
