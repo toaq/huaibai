@@ -8,6 +8,11 @@
       "name": "󱛘󱛓󱚷󱛊󱛃󱛍󱚺󱛂󱚸󱚲󱛓󱛙",
       "region": "󱛘󱛓󱚷󱛊󱛃󱛍󱚺󱛂󱛃󱚲󱛍󱚺󱛓󱛙",
       "bidirectional": false
+    },
+    "qtq_latin": {
+      "name": "Tóaqzu",
+      "region": "Tóaqgua",
+      "bidirectional": false
     }
   }
 }
