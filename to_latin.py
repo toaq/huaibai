@@ -118,7 +118,7 @@ if __name__ == "__main__":
     with open("src/assets/minecraft/lang/qtq_tqg.json") as f:
         lang = json.load(f)
 
-    with open("src/assets/minecraft/lang/qtq_latin.json", "w") as f:
+    with open("src/assets/minecraft/lang/qtq_latn_tqg.json", "w") as f:
         lang = {k: derani_to_latin(v) for k, v in lang.items()}
-        lang["language.code"] = "qtq_latin"
+        lang["language.code"] = "qtq_latn_tqg"
         json.dump(lang, f, ensure_ascii=False, indent=4)
