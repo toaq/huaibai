@@ -14,12 +14,12 @@
         defaultPackage = pkgs.stdenvNoCC.mkDerivation {
           name = "huaibai";
           src = self;
-          buildInputs = [ pkgs.zip ];
+          buildInputs = with pkgs; [ zip python3 ];
           buildPhase = ''
-            cp -r src build
+            python to_latin.py
             cp ${derani-fonts}/share/fonts/opentype/Guezueq.otf \
-              build/assets/minecraft/textures/font/guezueq.otf
-            cd build
+              src/assets/minecraft/textures/font/guezueq.otf
+            cd src
             zip -r ../Huaıbaı.zip *
             cd ..
           '';
