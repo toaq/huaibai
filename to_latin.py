@@ -45,6 +45,7 @@ between_vowels = {"\U000f16cd", "\U000f16ce"}
 acute_accent = "\u0301"
 diaeresis = "\u0308"
 circumflex_accent = "\u0302"
+underdot = "\u0323"
 
 
 def word_to_latin(word):
@@ -68,6 +69,13 @@ def word_to_latin(word):
         elif c == "󱛂":
             latin += "q"
             vowel = False
+        elif c == "󱛒":
+            latin = re.sub(
+                "[aeıou\u0301\u0302\u0308]+[mq]?$",
+                lambda m: m[0][0] + underdot + m[0][1:],
+                latin,
+                1,
+            )
         elif c in between_vowels:
             vowel = True
             continue
@@ -75,7 +83,10 @@ def word_to_latin(word):
             if placed_tone:
                 latin += vowels[c]
             else:
-                latin += vowels[c] + tone
+                vowel = vowels[c]
+                if tone != "" and vowel == "ı":
+                    vowel = "i"
+                latin += vowel + tone
                 placed_tone = True
             vowel = False
         else:
@@ -84,14 +95,14 @@ def word_to_latin(word):
     return unicodedata.normalize("NFKC", latin.lstrip("'"))
 
 
-trans = str.maketrans("󱛒󱛕󱛖󱛗󱛛", "\u0323.!? ", "󱛓󱛘󱛙")
+trans = str.maketrans("󱛕󱛖󱛗󱛛", ".!? ", "󱛓󱛘󱛙")
 
 
 def sentence_to_latin(sentence):
     sentence = sentence.translate(trans)
     sentence = re.sub(r"\s󱛚", "", sentence)
     sentence = re.sub(r"\s󱛔", ",", sentence)
-    sentence = re.sub(r"[󱚰-󱛎]+", lambda m: word_to_latin(m[0]), sentence)
+    sentence = re.sub(r"[󱚰-󱛒]+", lambda m: word_to_latin(m[0]), sentence)
     sentence = re.sub(r"[a-zA-Zıꝡ]", lambda m: m[0].upper(), sentence, 1)
     sentence = re.sub(r"\s([.?!])", lambda m: m[1], sentence)
     sentence = sentence.replace("\u00a0", " ")
