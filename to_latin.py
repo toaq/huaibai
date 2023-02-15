@@ -2,9 +2,9 @@ import json
 import re
 import unicodedata
 
-full_stops = {"󱛕", "󱛖", "󱛗"}
+FULL_STOPS = {"󱛕", "󱛖", "󱛗"}
 
-consonants = {
+CONSONANTS = {
     "󱚰": "m",
     "󱚲": "b",
     "󱚳": "p",
@@ -29,7 +29,7 @@ consonants = {
     "󱛆": "h",
 }
 
-vowels = {
+VOWELS = {
     "󱚲": "u",
     "󱚴": "e",
     "󱚹": "ı",
@@ -37,81 +37,86 @@ vowels = {
     "󱛃": "o",
 }
 
-t2 = "\U000f16ca"
-t3 = "\U000f16cb"
-t4 = "\U000f16cc"
-strip_tones = str.maketrans("", "", t2 + t3 + t4)
-between_vowels = {"\U000f16cd", "\U000f16ce"}
-acute_accent = "\u0301"
-diaeresis = "\u0308"
-circumflex_accent = "\u0302"
-underdot = "\u0323"
+DERANI_T2 = "\U000f16ca"
+DERANI_T3 = "\U000f16cb"
+DERANI_T4 = "\U000f16cc"
+STRIP_TONES = str.maketrans("", "", DERANI_T2 + DERANI_T3 + DERANI_T4)
+BETWEEN_VOWELS = {"\U000f16cd", "\U000f16ce"}
+UNDERDOT = "\N{combining dot below}"
+TRANSLATE_PUNCTUATION = str.maketrans("󱛕󱛖󱛗󱛛", ".!? ", "󱛓󱛘󱛙")
 
 
-def word_to_latin(word):
-    latin = ""
-    tone = (
-        acute_accent
-        if t2 in word
-        else diaeresis
-        if t3 in word
-        else circumflex_accent
-        if t4 in word
-        else ""
-    )
-    word = word.translate(strip_tones)
-    vowel = len(word) > 1 and word[1] not in vowels
-    placed_tone = False
-    for c in word:
-        if c == "󱚱":
-            latin += "m"
-            vowel = False
-        elif c == "󱛂":
-            latin += "q"
-            vowel = False
-        elif c == "󱛒":
-            latin = re.sub(
-                "[aeıou\u0301\u0302\u0308]+[mq]?$",
-                lambda m: m[0][0] + underdot + m[0][1:],
-                latin,
-                1,
-            )
-        elif c in between_vowels:
-            vowel = True
-            continue
-        elif vowel and c in vowels:
-            if placed_tone:
-                latin += vowels[c]
+class DeraniToLatin:
+    def __init__(self, prefix_separator=None, ꝡ_replacement=None):
+        self.prefix_separator = prefix_separator
+        self.ꝡ_replacement = ꝡ_replacement
+
+    def convert_word(self, word):
+        latin = ""
+        tone = (
+            "\N{combining acute accent}"
+            if DERANI_T2 in word
+            else "\N{combining diaeresis}"
+            if DERANI_T3 in word
+            else "\N{combining circumflex accent}"
+            if DERANI_T4 in word
+            else ""
+        )
+        word = word.translate(STRIP_TONES)
+        vowel = len(word) > 1 and word[1] not in VOWELS
+        placed_tone = False
+        for c in word:
+            if c == "󱚱":
+                latin += "m"
+                vowel = False
+            elif c == "󱛂":
+                latin += "q"
+                vowel = False
+            elif c == "󱛒":
+                if self.prefix_separator:
+                    latin += self.prefix_separator
+                else:
+                    # Place a dot under the first vowel of the last raku:
+                    latin = re.sub(
+                        "[aeıou\u0301\u0302\u0308]+[mq]?$",
+                        lambda m: m[0][0] + UNDERDOT + m[0][1:],
+                        latin,
+                        1,
+                    )
+            elif c in BETWEEN_VOWELS:
+                vowel = True
+                continue
+            elif vowel and c in VOWELS:
+                if placed_tone:
+                    latin += VOWELS[c]
+                else:
+                    vowel = VOWELS[c]
+                    if tone != "" and vowel == "ı":
+                        vowel = "i"
+                    latin += vowel + tone
+                    placed_tone = True
+                vowel = False
             else:
-                vowel = vowels[c]
-                if tone != "" and vowel == "ı":
-                    vowel = "i"
-                latin += vowel + tone
-                placed_tone = True
-            vowel = False
-        else:
-            latin += consonants[c]
-            vowel = True
-    return unicodedata.normalize("NFKC", latin.lstrip("'"))
+                consonant = CONSONANTS[c]
+                if consonant == "ꝡ" and self.ꝡ_replacement:
+                    consonant = self.ꝡ_replacement
+                latin += consonant
+                vowel = True
+        return unicodedata.normalize("NFKC", latin.lstrip("'"))
 
+    def convert_sentence(self, sentence):
+        sentence = sentence.translate(TRANSLATE_PUNCTUATION)
+        sentence = re.sub(r"\s󱛚", "", sentence)
+        sentence = re.sub(r"\s󱛔", ",", sentence)
+        sentence = re.sub(r"[󱚰-󱛒]+", lambda m: self.convert_word(m[0]), sentence)
+        sentence = re.sub(r"[a-zıꝡ]", lambda m: m[0].upper(), sentence, 1)
+        sentence = re.sub(r"\s([.?!])", lambda m: m[1], sentence)
+        sentence = sentence.replace("\u00a0", " ")
+        return sentence
 
-trans = str.maketrans("󱛕󱛖󱛗󱛛", ".!? ", "󱛓󱛘󱛙")
-
-
-def sentence_to_latin(sentence):
-    sentence = sentence.translate(trans)
-    sentence = re.sub(r"\s󱛚", "", sentence)
-    sentence = re.sub(r"\s󱛔", ",", sentence)
-    sentence = re.sub(r"[󱚰-󱛒]+", lambda m: word_to_latin(m[0]), sentence)
-    sentence = re.sub(r"[a-zA-Zıꝡ]", lambda m: m[0].upper(), sentence, 1)
-    sentence = re.sub(r"\s([.?!])", lambda m: m[1], sentence)
-    sentence = sentence.replace("\u00a0", " ")
-    return sentence
-
-
-def derani_to_latin(string):
-    sentences = re.findall(r".+?(?:[󱛕󱛖󱛗]|$)", string)
-    return "".join(map(sentence_to_latin, sentences))
+    def convert(self, text):
+        sentences = re.findall(r".+?(?:[󱛕󱛖󱛗]|$)", text)
+        return "".join(self.convert_sentence(s) for s in sentences)
 
 
 if __name__ == "__main__":
@@ -119,6 +124,7 @@ if __name__ == "__main__":
         lang = json.load(f)
 
     with open("src/assets/minecraft/lang/qtq_latn_tqg.json", "w") as f:
-        lang = {k: derani_to_latin(v) for k, v in lang.items()}
+        d2l = DeraniToLatin(prefix_separator="·")
+        lang = {k: d2l.convert(v) for k, v in lang.items()}
         lang["language.code"] = "qtq_latn_tqg"
         json.dump(lang, f, ensure_ascii=False, indent=4)
