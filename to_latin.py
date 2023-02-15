@@ -105,11 +105,13 @@ class DeraniToLatin:
         return unicodedata.normalize("NFKC", latin.lstrip("'"))
 
     def convert_sentence(self, sentence):
+        if not re.match(".*[\U000f16b0-\U000f16df]", sentence):
+            return sentence
         sentence = sentence.translate(TRANSLATE_PUNCTUATION)
         sentence = re.sub(r"\s󱛚", "", sentence)
         sentence = re.sub(r"\s󱛔", ",", sentence)
         sentence = re.sub(r"[󱚰-󱛒]+", lambda m: self.convert_word(m[0]), sentence)
-        sentence = re.sub(r"[a-zıꝡ]", lambda m: m[0].upper(), sentence, 1)
+        sentence = re.sub(r"\w", lambda m: m[0].upper(), sentence, 1)
         sentence = re.sub(r"\s([.?!])", lambda m: m[1], sentence)
         sentence = sentence.replace("\u00a0", " ")
         return sentence
