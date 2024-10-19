@@ -5036,7 +5036,7 @@
 	"menu.generatingTerrain": "Building terrain",
 	"menu.loadingForcedChunks": "Loading forced chunks for dimension %s",
 	"menu.loadingLevel": "Loading world",
-	"menu.modded": " (Modded)",
+	"menu.modded": " (modded)",
 	"menu.multiplayer": "Multiplayer",
 	"menu.online": "Minecraft Realms",
 	"menu.options": "Options...",

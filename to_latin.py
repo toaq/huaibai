@@ -48,6 +48,7 @@ STRIP_TONES = str.maketrans("", "", DERANI_T2 + DERANI_T3 + DERANI_T4)
 BETWEEN_VOWELS = {"\U000f16cd", "\U000f16ce"}
 UNDERDOT = "\N{combining dot below}"
 TRANSLATE_PUNCTUATION = str.maketrans("󱛕󱛖󱛗󱛛", ".!? ", "󱛓󱛘󱛙")
+is_capitalized = lambda s: re.match(r"^\W*[%A-Z]", s)
 
 
 class DeraniToLatin:
@@ -108,29 +109,38 @@ class DeraniToLatin:
                 vowel = True
         return unicodedata.normalize("NFKC", latin.lstrip("'"))
 
-    def convert_sentence(self, sentence):
+    def convert_sentence(self, sentence, capitalize=True):
         if not re.match(".*[\U000f16b0-\U000f16df]", sentence):
             return sentence
         sentence = sentence.translate(TRANSLATE_PUNCTUATION)
         sentence = re.sub(r"\s󱛚", "", sentence)
         sentence = re.sub(r"\s󱛔", ",", sentence)
         sentence = re.sub(r"[󱚰-󱛒]+", lambda m: self.convert_word(m[0]), sentence)
-        sentence = re.sub(r"\w", lambda m: m[0].upper(), sentence, 1)
+        if capitalize:
+            sentence = re.sub(r"\w", lambda m: m[0].upper(), sentence, 1)
         sentence = re.sub(r"\s([.?!])", lambda m: m[1], sentence)
         sentence = sentence.replace("\u00a0", " ")
+        sentence = sentence.replace("%S", "%s")
         return sentence
 
-    def convert(self, text):
+    def convert(self, text, en_text):
         sentences = re.findall(r".+?(?:[󱛕󱛖󱛗]|$)", text)
-        return "".join(self.convert_sentence(s) for s in sentences)
+        converted = []
+        for i, sentence in enumerate(sentences):
+            capitalize = i > 0 or is_capitalized(en_text)
+            converted.append(self.convert_sentence(sentence, capitalize))
+        return "".join(converted)
 
 
 if __name__ == "__main__":
+    with open("src/assets/minecraft/lang/en_us.json") as f:
+        en = json.load(f)
+
     with open("src/assets/minecraft/lang/qtq_tqg.json") as f:
         lang = json.load(f)
 
     with open("src/assets/minecraft/lang/qtq_latn_tqg.json", "w") as f:
         d2l = DeraniToLatin(prefix_separator="·")
-        lang = {k: d2l.convert(v) for k, v in lang.items()}
+        lang = {k: d2l.convert(v, en[k]) for k, v in lang.items()}
         lang["language.code"] = "qtq_latn_tqg"
         json.dump(lang, f, ensure_ascii=False, indent=4)
